@@ -85,6 +85,16 @@ public class player_controller : MonoBehaviour
                 animat.SetBool("idle", true);
             }
         }
+        if ( rb.velocity.y < 0.1f)
+        {
+            animat.SetBool("Falling", true);
+            animat.SetBool("idle", false);
+        }
+        if (rb.velocity.y > 1.0f && !coll.IsTouchingLayers(ground))
+        {
+            animat.SetBool("Jumping", true);
+            animat.SetBool("idle", false);
+        }
         if (animat.GetBool("Jumping")) {
             if (rb.velocity.y < 0) {
                 animat.SetBool("Jumping", false);
