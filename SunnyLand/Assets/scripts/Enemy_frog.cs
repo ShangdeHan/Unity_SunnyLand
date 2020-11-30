@@ -9,7 +9,6 @@ public class Enemy_frog : Enemy
     //public float leftx, rightx;
     public bool faceleft;
     public float speed, jumpforce;
-    public Animator animt;
     public LayerMask ground;
     public Collider2D coll;
 
@@ -18,7 +17,6 @@ public class Enemy_frog : Enemy
     {
         base.Start();
         rb = GetComponent<Rigidbody2D>();
-        animt = GetComponent<Animator>();
         coll = GetComponent<Collider2D>();
         faceleft = true;
         //first method: 

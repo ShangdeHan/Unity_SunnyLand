@@ -10,7 +10,7 @@ public class Enemy_eagle : Enemy {
     public int peek;
 
     // Start is called before the first frame update
-    protected virtual void Start()
+    protected override void Start()
     {
         base.Start();
         rb = GetComponent<Rigidbody2D>();

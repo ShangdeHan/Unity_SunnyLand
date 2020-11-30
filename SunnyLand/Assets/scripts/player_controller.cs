@@ -17,6 +17,7 @@ public class player_controller : MonoBehaviour
     public Text CherryNum;
     public Text GemNum;
     public bool IsHurt = false;
+    public AudioSource jumpAudio, hurtAudio, collectionAudio;
 
 
     // Start is called before the first frame update
@@ -51,6 +52,7 @@ public class player_controller : MonoBehaviour
         }
         if (Input.GetButtonDown("Jump")) 
         {
+            jumpAudio.Play();
             if (Cherry < 3)
             {
                 if (jumpCount < 3)
@@ -114,20 +116,23 @@ public class player_controller : MonoBehaviour
             Destroy(collistion.gameObject);
             Cherry++;
             CherryNum.text = Cherry.ToString();
+            collectionAudio.Play();
         }
-        if (collistion.tag == "Gem")
+        else if (collistion.tag == "Gem")
         {
             Destroy(collistion.gameObject);
             Gem++;
             GemNum.text = Gem.ToString();
+            collectionAudio.Play();
+
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision) 
     {
-        Enemy enemy = collision.gameObject.GetComponent<Enemy>();
         if (collision.gameObject.tag == "Enemy")
         {
+            Enemy enemy = collision.gameObject.GetComponent<Enemy>();
             if (animat.GetBool("Falling"))
             {
                 enemy.Death();
@@ -137,11 +142,13 @@ public class player_controller : MonoBehaviour
             else if (transform.position.x < collision.gameObject.transform.position.x)
             { 
                 rb.velocity = new Vector2(-7, rb.velocity.y);
+                hurtAudio.Play();
                 IsHurt = true;
             }
             else if (transform.position.x > collision.gameObject.transform.position.x)
             {
                 rb.velocity = new Vector2(7, rb.velocity.y);
+                hurtAudio.Play();
                 IsHurt = true;
             }
         }

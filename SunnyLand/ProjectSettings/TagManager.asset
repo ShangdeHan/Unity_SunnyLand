@@ -6,10 +6,11 @@ TagManager:
   tags:
   - Collection
   - Gem
-  - Frog
-  - Opossum
-  - Eagle
   - Enemy
+  - Environment
+  - Frog
+  - Eagle
+  - Opossum
   layers:
   - Default
   - TransparentFX
