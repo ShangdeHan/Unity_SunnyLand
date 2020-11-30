@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Collection
   - Gem
+  - Frog
+  - Opossum
+  - Eagle
   - Enemy
   layers:
   - Default

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_eagle : MonoBehaviour {
+public class Enemy_eagle : Enemy {
     public Rigidbody2D rb;
     public Transform up, down;
     public float upy, downy;
@@ -10,8 +10,9 @@ public class Enemy_eagle : MonoBehaviour {
     public int peek;
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
+        base.Start();
         rb = GetComponent<Rigidbody2D>();
         peek = 1;
         upy = up.position.y;

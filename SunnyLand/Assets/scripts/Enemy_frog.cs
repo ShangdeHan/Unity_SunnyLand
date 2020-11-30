@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_frog : MonoBehaviour
+public class Enemy_frog : Enemy
 {
     public Rigidbody2D rb;
     public Transform left, right;
@@ -14,8 +14,9 @@ public class Enemy_frog : MonoBehaviour
     public Collider2D coll;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         rb = GetComponent<Rigidbody2D>();
         animt = GetComponent<Animator>();
         coll = GetComponent<Collider2D>();

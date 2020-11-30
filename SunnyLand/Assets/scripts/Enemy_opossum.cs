@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_opossum : MonoBehaviour {
+public class Enemy_opossum : Enemy {
     public Rigidbody2D rb;
     public Transform left, right;
     //public float leftx, rightx;
@@ -10,8 +10,9 @@ public class Enemy_opossum : MonoBehaviour {
     public float speed;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         rb = GetComponent<Rigidbody2D>();
         faceleft = true;
         //first method: 
