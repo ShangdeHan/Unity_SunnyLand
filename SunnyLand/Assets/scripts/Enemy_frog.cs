@@ -8,12 +8,17 @@ public class Enemy_frog : MonoBehaviour
     public Transform left, right;
     //public float leftx, rightx;
     public bool faceleft;
-    public float speed;
+    public float speed, jumpforce;
+    public Animator animt;
+    public LayerMask ground;
+    public Collider2D coll;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animt = GetComponent<Animator>();
+        coll = GetComponent<Collider2D>();
         faceleft = true;
         //first method: 
         transform.DetachChildren();
@@ -26,7 +31,7 @@ public class Enemy_frog : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Move();
+        SwitchAnimt();
     }
 
 
@@ -34,7 +39,11 @@ public class Enemy_frog : MonoBehaviour
     {
         if (faceleft)
         {
-            rb.velocity = new Vector2(-speed, rb.velocity.y);
+            rb.velocity = new Vector2(-speed, jumpforce);
+            if (coll.IsTouchingLayers(ground)) 
+            {
+                animt.SetBool("Jumping", true);
+            }
             if (transform.position.x < left.position.x)
             {
                 transform.localScale = new Vector3(-1, 1, 1);
@@ -43,12 +52,32 @@ public class Enemy_frog : MonoBehaviour
         }
         else 
         {
-            rb.velocity = new Vector2(speed, rb.velocity.y);
+            rb.velocity = new Vector2(speed, jumpforce);
+            if (coll.IsTouchingLayers(ground))
+            {
+                animt.SetBool("Jumping", true);
+            }
             if (transform.position.x > right.position.x) 
             {
                 transform.localScale = new Vector3(1, 1, 1);
                 faceleft = true;
             }
+        }
+    }
+
+    void SwitchAnimt() 
+    {
+        if (animt.GetBool("Jumping")) 
+        {
+            if (rb.velocity.y < 0.1) 
+            {
+                animt.SetBool("Jumping", false);
+                animt.SetBool("Falling", true);
+            }
+        }
+        if (coll.IsTouchingLayers(ground)) 
+        {
+            animt.SetBool("Falling", false);
         }
     }
 }
