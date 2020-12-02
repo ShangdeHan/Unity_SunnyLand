@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2272241876548068129}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.86, y: -0.43, z: 0}
+  m_LocalPosition: {x: -4.45, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2272241877782478585}
@@ -54,7 +54,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2272241877499207774}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.86, y: -0.5, z: 0}
+  m_LocalPosition: {x: 3.99, y: -0.58, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2272241877782478585}
@@ -89,7 +89,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2272241877782478580}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.94, y: -4.99, z: 1.4648438}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -182,7 +182,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -201,9 +201,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.052930474, y: -0.109169245}
+  m_Offset: {x: -0.052930474, y: -0.098936796}
   serializedVersion: 2
-  m_Radius: 0.5677545
+  m_Radius: 0.55752206
 --- !u!114 &2272241877782478586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,11 +221,11 @@ MonoBehaviour:
   right: {fileID: 2272241877499207841}
   faceleft: 1
   speed: 2
-  jumpforce: 0
+  jumpforce: 5
   ground:
     serializedVersion: 2
-    m_Bits: 0
-  coll: {fileID: 0}
+    m_Bits: 256
+  coll: {fileID: 2272241877782478584}
 --- !u!82 &8621103038173045013
 AudioSource:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 6254495919834724938}
   m_Layer: 0
   m_Name: player-idle-1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     m_Bits: 256
   coll: {fileID: 4937538370997065402}
   Cherry: 0
-  Gem: -1
+  Gem: 0
   jumpCount: 0
   CherryNum: {fileID: 0}
   GemNum: {fileID: 0}
@@ -499,7 +499,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 52633201299171d4990bacf1afbf5e85, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
