@@ -6,17 +6,15 @@ using UnityEngine.UI;
 public class player_controller : MonoBehaviour
 {
     [SerializeField]private Rigidbody2D rb;
-    public float speed;
-    public float jumpforce;
+    public float speed, jumpForce;
     private Animator animat;
-    public LayerMask ground;
-    public Collider2D coll;
-    public int Cherry;
-    public int Gem;
-    public int jumpCount;
-    public Text CherryNum;
-    public Text GemNum;
-    public bool IsHurt = false;
+    public LayerMask ground, ladder;
+    public Collider2D coll, disColl;
+    public Transform ceilingCheck, groundCheck;
+    private int Cherry, Gem;
+    private int jumpCount;
+    public Text CherryNum, GemNum;
+    public bool IsHurt, jumpPress, isGround, isJump;
     public AudioSource jumpAudio, hurtAudio, collectionAudio;
 
 
@@ -27,55 +25,40 @@ public class player_controller : MonoBehaviour
         animat = GetComponent<Animator>();
     }
 
+    private void Update()
+    {
+        if (Input.GetButtonDown("Jump") && jumpCount > 0)
+        {
+            jumpPress = true;
+        }
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
+        isGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, ground);
         if (IsHurt == false) 
         {
             Movement();
         }
+        Jump();
         SwitchAnim();
     }
 
     void Movement() 
     {
-        float horizontalmove;
-        float facedirection;
-        horizontalmove = Input.GetAxis("Horizontal");
-        facedirection = Input.GetAxisRaw("Horizontal");
+        float horizontalmove = Input.GetAxisRaw("Horizontal"); ;
+        rb.velocity = new Vector2(horizontalmove * speed * Time.fixedDeltaTime, rb.velocity.y);
         if (horizontalmove != 0) {
-            rb.velocity = new Vector2(horizontalmove * speed * Time.fixedDeltaTime, rb.velocity.y);
-            animat.SetFloat("Running", Mathf.Abs(facedirection));
+            transform.localScale = new Vector3(horizontalmove, 1, 1);
         }
-        if (facedirection != 0) {
-            transform.localScale = new Vector3(facedirection, 1, 1);
-        }
-        if (Input.GetButtonDown("Jump")) 
-        {
-            jumpAudio.Play();
-            if (Cherry < 3)
-            {
-                if (jumpCount < 3)
-                {
-                    rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
-                    animat.SetBool("Jumping", true);
-                    jumpCount++;
-                }
-                else if (coll.IsTouchingLayers(ground))
-                {
-                    jumpCount = 0;
-                }
-            }
-            else 
-            {
-                rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
-                animat.SetBool("Jumping", true);
-            }
-        }
+        Crouch();
+        Climb();
     }
 
     void SwitchAnim() 
     {
+        animat.SetFloat("Running", Mathf.Abs(rb.velocity.x));
         animat.SetBool("idle", false);
         if(IsHurt == true) 
         {
@@ -87,23 +70,21 @@ public class player_controller : MonoBehaviour
                 animat.SetBool("idle", true);
             }
         }
-        if (rb.velocity.y < 0.1f)
-            {
-            animat.SetBool("Falling", true);
-            animat.SetBool("idle", false);
-            }
-        if (rb.velocity.y > 1.0f && !coll.IsTouchingLayers(ground))
+        if (isGround)
+        {
+            animat.SetBool("Falling", false);
+            animat.SetBool("idle", true);
+        } else if (!isGround && rb.velocity.y > 0)
         {
             animat.SetBool("Jumping", true);
-            animat.SetBool("idle", false);
-        }
-        if (animat.GetBool("Jumping")) {
-            if (rb.velocity.y < 0) {
-                animat.SetBool("Jumping", false);
-                animat.SetBool("Falling", true);
-            }
-        } else if (coll.IsTouchingLayers(ground)) 
+        } else if (rb.velocity.y < 0)
         {
+            animat.SetBool("Jumping", false);
+            animat.SetBool("Falling", true);
+        }
+        if (coll.IsTouchingLayers(ground) || coll.IsTouchingLayers(ladder))
+        {
+            animat.SetBool("Jumping", false);
             animat.SetBool("Falling", false);
             animat.SetBool("idle", true);
         }
@@ -136,7 +117,7 @@ public class player_controller : MonoBehaviour
             if (animat.GetBool("Falling"))
             {
                 enemy.Death();
-                rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce * Time.fixedDeltaTime);
                 animat.SetBool("Jumping", true);
             }
             else if (transform.position.x < collision.gameObject.transform.position.x)
@@ -151,6 +132,76 @@ public class player_controller : MonoBehaviour
                 hurtAudio.Play();
                 IsHurt = true;
             }
+        }
+    }
+
+    void Jump()
+    {
+        if (isGround)
+        {
+            if(Gem >= 3)
+            {
+                jumpCount = 4;
+            } else
+            {
+                jumpCount = 2;
+            }
+            isJump = false;
+        }
+        if (jumpPress && isGround)
+        {
+            isJump = true;
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            jumpAudio.Play();
+            jumpCount--;
+            jumpPress = false;
+        } else if (jumpPress && jumpCount > 0 && isJump)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            jumpAudio.Play();
+            jumpCount--;
+            jumpPress = false;
+        }
+    }
+
+    private void Crouch()
+    {
+        if (!Physics2D.OverlapCircle(ceilingCheck.position, 0.2f, ground))
+        {
+            if (Input.GetButton("Crouch"))
+            {
+                animat.SetBool("Crouching", true);
+                disColl.enabled = false;
+            } else
+            {
+                animat.SetBool("Crouching", false);
+                disColl.enabled = true;
+            }
+        }
+    }
+
+    private void Climb()
+    {
+        if (coll.IsTouchingLayers(ladder))
+        {
+            if(animat.GetFloat("Running") > 0)
+            {
+                animat.SetFloat("Running", 0);
+            }
+            rb.gravityScale = 0.0f;
+            animat.SetBool("Falling", false);
+            animat.SetBool("Jumping", false);
+            animat.SetBool("idle", true);
+            float verticalMove = Input.GetAxis("Vertical");
+            if(verticalMove != 0)
+            {
+                animat.SetBool("Climbing", true);
+                rb.velocity = new Vector2(rb.velocity.x, verticalMove * 4);
+            }
+        } else
+        {
+            rb.gravityScale = 3.0f;
+            animat.SetBool("Climbing", false);
         }
     }
 }
