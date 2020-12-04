@@ -21,7 +21,7 @@ TagManager:
   - 
   - 
   - Ground
-  - 
+  - Ladder
   - 
   - 
   - 
@@ -50,6 +50,9 @@ TagManager:
     locked: 0
   - name: background
     uniqueID: 3395639989
+    locked: 0
+  - name: Ladder
+    uniqueID: 2898809779
     locked: 0
   - name: Environment
     uniqueID: 504403493
