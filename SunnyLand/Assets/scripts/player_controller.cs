@@ -44,7 +44,7 @@ public class player_controller : MonoBehaviour
         horizontalmove = Input.GetAxis("Horizontal");
         facedirection = Input.GetAxisRaw("Horizontal");
         if (horizontalmove != 0) {
-            rb.velocity = new Vector2(horizontalmove * speed * Time.deltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(horizontalmove * speed * Time.fixedDeltaTime, rb.velocity.y);
             animat.SetFloat("Running", Mathf.Abs(facedirection));
         }
         if (facedirection != 0) {
