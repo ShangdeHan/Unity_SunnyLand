@@ -11,6 +11,7 @@ TagManager:
   - Frog
   - Eagle
   - Opossum
+  - DeadLine
   layers:
   - Default
   - TransparentFX

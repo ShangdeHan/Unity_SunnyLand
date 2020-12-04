@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class player_controller : MonoBehaviour
@@ -15,7 +16,7 @@ public class player_controller : MonoBehaviour
     private int jumpCount;
     public Text CherryNum, GemNum;
     public bool IsHurt, jumpPress, isGround, isJump;
-    public AudioSource jumpAudio, hurtAudio, collectionAudio;
+    public AudioSource jumpAudio, hurtAudio, collectionAudio, gameoverAudio;
 
 
     // Start is called before the first frame update
@@ -105,7 +106,12 @@ public class player_controller : MonoBehaviour
             Gem++;
             GemNum.text = Gem.ToString();
             collectionAudio.Play();
-
+        }
+        if (collistion.tag == "DeadLine")
+        {
+            GetComponent<AudioSource>().enabled = false;
+            Invoke(nameof(Restart), 2f);
+            gameoverAudio.Play();
         }
     }
 
@@ -203,5 +209,10 @@ public class player_controller : MonoBehaviour
             rb.gravityScale = 3.0f;
             animat.SetBool("Climbing", false);
         }
+    }
+
+    private void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
