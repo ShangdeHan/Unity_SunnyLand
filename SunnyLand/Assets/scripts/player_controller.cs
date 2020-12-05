@@ -234,4 +234,18 @@ public class player_controller : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public bool joyTrue()
+    {
+        if(joy.Horizontal != 0)
+        {
+            return true;
+        }else if(joy.Vertical != 0)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
 }

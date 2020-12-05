@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class Enter_house : MonoBehaviour
 {
-
     // Update is called once per frame
     void Update()
     {
