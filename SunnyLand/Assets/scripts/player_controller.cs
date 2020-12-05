@@ -16,19 +16,22 @@ public class player_controller : MonoBehaviour
     private int jumpCount;
     public Text CherryNum, GemNum;
     public bool IsHurt, jumpPress, isGround, isJump;
-    public AudioSource jumpAudio, hurtAudio, collectionAudio, gameoverAudio;
-
+    public Joystick joy;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animat = GetComponent<Animator>();
+        
     }
 
     private void Update()
     {
         if (Input.GetButtonDown("Jump") && jumpCount > 0)
+        {
+            jumpPress = true;
+        }else if(joy.Vertical > 0.5f && jumpCount > 0)
         {
             jumpPress = true;
         }
@@ -48,10 +51,19 @@ public class player_controller : MonoBehaviour
 
     void Movement() 
     {
-        float horizontalmove = Input.GetAxisRaw("Horizontal"); ;
+        float horizontalmove;
+        if (joy.Horizontal != 0)
+        {
+            horizontalmove = joy.Horizontal;
+        } else
+        {
+            horizontalmove = Input.GetAxisRaw("Horizontal");
+        }
         rb.velocity = new Vector2(horizontalmove * speed * Time.fixedDeltaTime, rb.velocity.y);
-        if (horizontalmove != 0) {
-            transform.localScale = new Vector3(horizontalmove, 1, 1);
+        if (horizontalmove > 0) {
+            transform.localScale = new Vector3(1, 1, 1);
+        }else if (horizontalmove < 0){
+            transform.localScale = new Vector3(-1, 1, 1);
         }
         Crouch();
         Climb();
@@ -94,20 +106,20 @@ public class player_controller : MonoBehaviour
             Destroy(collistion.gameObject);
             Cherry++;
             CherryNum.text = Cherry.ToString();
-            collectionAudio.Play();
+            SoundManager.instance.ColleAudio();
         }
         else if (collistion.tag == "Gem")
         {
             Destroy(collistion.gameObject);
             Gem++;
             GemNum.text = Gem.ToString();
-            collectionAudio.Play();
+            SoundManager.instance.ColleAudio();
         }
         if (collistion.tag == "DeadLine")
         {
-            GetComponent<AudioSource>().enabled = false;
+            SoundManager.instance.BGM.enabled = false;
             Invoke(nameof(Restart), 2f);
-            gameoverAudio.Play();
+            SoundManager.instance.OverAudio();
         }
     }
 
@@ -125,13 +137,13 @@ public class player_controller : MonoBehaviour
             else if (transform.position.x < collision.gameObject.transform.position.x)
             { 
                 rb.velocity = new Vector2(-7, rb.velocity.y);
-                hurtAudio.Play();
+                SoundManager.instance.HurtAudio();
                 IsHurt = true;
             }
             else if (transform.position.x > collision.gameObject.transform.position.x)
             {
                 rb.velocity = new Vector2(7, rb.velocity.y);
-                hurtAudio.Play();
+                SoundManager.instance.HurtAudio();
                 IsHurt = true;
             }
         }
@@ -154,13 +166,13 @@ public class player_controller : MonoBehaviour
         {
             isJump = true;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            jumpAudio.Play();
+            SoundManager.instance.JumpAudio();
             jumpCount--;
             jumpPress = false;
         } else if (jumpPress && jumpCount > 0 && isJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            jumpAudio.Play();
+            SoundManager.instance.JumpAudio();
             jumpCount--;
             jumpPress = false;
         }
@@ -170,7 +182,12 @@ public class player_controller : MonoBehaviour
     {
         if (!Physics2D.OverlapCircle(ceilingCheck.position, 0.2f, ground))
         {
-            if (Input.GetButton("Crouch"))
+            if(joy.Vertical < -0.5f)
+            {
+                animat.SetBool("Crouching", true);
+                disColl.enabled = false;
+            }
+            else if (Input.GetButton("Crouch"))
             {
                 animat.SetBool("Crouching", true);
                 disColl.enabled = false;
@@ -193,7 +210,14 @@ public class player_controller : MonoBehaviour
             rb.gravityScale = 0.0f;
             animat.SetBool("Falling", false);
             animat.SetBool("Jumping", false);
-            float verticalMove = Input.GetAxis("Vertical");
+            float verticalMove;
+            if(joy.Vertical != 0)
+            {
+                verticalMove = joy.Vertical;
+            } else
+            {
+                verticalMove = Input.GetAxis("Vertical");
+            }
             if(verticalMove > 0.5f || verticalMove < 0.5f)
             {
                 animat.SetBool("Climbing", true);
