@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour {
 
     public void Destroythis()
     {
+        GetComponent<Collider2D>().enabled = false;
         Destroy(gameObject);
     }
 

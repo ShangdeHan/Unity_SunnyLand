@@ -60,7 +60,6 @@ public class player_controller : MonoBehaviour
     void SwitchAnim() 
     {
         animat.SetFloat("Running", Mathf.Abs(rb.velocity.x));
-        animat.SetBool("idle", false);
         if(IsHurt == true) 
         {
             animat.SetBool("Hurt", true);
@@ -68,14 +67,12 @@ public class player_controller : MonoBehaviour
             {
                 IsHurt = false;
                 animat.SetBool("Hurt", false);
-                animat.SetBool("idle", true);
             }
         }
         if (isGround)
         {
             animat.SetBool("Falling", false);
-            animat.SetBool("idle", true);
-        } else if (!isGround && rb.velocity.y > 0)
+        } else if (!isGround && rb.velocity.y > 0.5f)
         {
             animat.SetBool("Jumping", true);
         } else if (rb.velocity.y < 0)
@@ -83,11 +80,10 @@ public class player_controller : MonoBehaviour
             animat.SetBool("Jumping", false);
             animat.SetBool("Falling", true);
         }
-        if (coll.IsTouchingLayers(ground) || coll.IsTouchingLayers(ladder))
+        if (coll.IsTouchingLayers(ground) || coll.IsTouchingLayers(ladder) || disColl.IsTouchingLayers(ground))
         {
             animat.SetBool("Jumping", false);
             animat.SetBool("Falling", false);
-            animat.SetBool("idle", true);
         }
     }
 
@@ -197,9 +193,8 @@ public class player_controller : MonoBehaviour
             rb.gravityScale = 0.0f;
             animat.SetBool("Falling", false);
             animat.SetBool("Jumping", false);
-            animat.SetBool("idle", true);
             float verticalMove = Input.GetAxis("Vertical");
-            if(verticalMove != 0)
+            if(verticalMove > 0.5f || verticalMove < 0.5f)
             {
                 animat.SetBool("Climbing", true);
                 rb.velocity = new Vector2(rb.velocity.x, verticalMove * 4);
